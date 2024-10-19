@@ -1,75 +1,39 @@
-# Nuxt 3 Minimal Starter
+# PRUEBA TÉCNICA DESARROLLADOR FULLSTACK HANNAH SOFTWARE
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+configuracion del equipo
+* node 20.14.0
 
-## Setup
+requisitos previos
+* ejecutar comando: npm install
+* configurar las variables de entornos de la aplicacion
+* ejecutar comando: npm run dev
 
-Make sure to install the dependencies:
+claves de acceso
+* usuario: admin@mail.com
+* contraseña: 1 
 
-```bash
-# npm
-npm install
+Aplicación: Una aplicación de gestión de tareas (ToDo List)
 
-# pnpm
-pnpm install
+Requisitos
+Frontend (Vue):
+o SPA:
 
-# yarn
-yarn install
+    ▪ Crear una interfaz de usuario intuitiva para gestionar las tareas.
 
-# bun
-bun install
-```
+    ▪ Utilizar Vue Router para la navegación entre las diferentes vistas (lista de tareas, formulario de creación/edición).
 
-## Development Server
+    ▪ Consumir la API REST utilizando Axios para obtener y modificar datos.
 
-Start the development server on `http://localhost:3000`:
+    ▪ Implementar la lógica para crear, leer, actualizar y eliminar tareas.
 
-```bash
-# npm
-npm run dev
+    ▪ Mostrar los datos de las tareas en una tabla o lista.
 
-# pnpm
-pnpm run dev
+o Estado:
 
-# yarn
-yarn dev
+    ▪ Gestionar el estado de la aplicación utilizando Vuex o Pinia.
 
-# bun
-bun run dev
-```
 
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+• Frontend:
+    o Agregar funcionalidad a la tabla o lista para reordenar los registros y que se guarde en la base de datos mediante un endpoint de la API
+    
+    o Agregar carga y/o actualización de una imagen por tarea.

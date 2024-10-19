@@ -79,6 +79,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import draggable from 'vuedraggable'
 import { TareaStore } from '~/src/store/TareasStore';
+import Swal from 'sweetalert2';
 
 // components
 import listComponent from '@/components/list.component.vue';
@@ -113,13 +114,21 @@ const update = (id: number) => {
 
 const destroy = async (id: number) => {
     try {
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true, // Esto asegura que "Cancelar" esté a la izquierda y "Aceptar" a la derecha
+        });
+        if (result.isDismissed) return;
         const { data } = await TareasRepository.remove(id)
-        console.log(data);
         if (!data.success) {
             return;
         }
         await init();
-
     } catch (exception) {
         console.log(exception);
     }
@@ -160,6 +169,15 @@ const ordenamiento = async (payload) => {
 
 const save = async () => {
     try {
+        const result = await Swal.fire({
+            title: '¿Cambiar estado de la tarea?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true, // Esto asegura que "Cancelar" esté a la izquierda y "Aceptar" a la derecha
+        });
+        if (result.isDismissed) return;
         const { data } = await TareasRepository.cambio(store.tarea_id, { estado: store.estado });
         if (!data.success) {
             return;

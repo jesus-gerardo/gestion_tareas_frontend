@@ -26,6 +26,19 @@
                     Ingresar
                 </button>
             </form>
+
+            <div v-if="listError.length > 0" class="w-full py-1">
+                <div class="bg-red-500 text-white p-3 rounded-lg shadow-md w-full bg-opacity-80">
+                    <!-- Mensajes de error -->
+                    <div>
+                        <ul class="space-y-1">
+                            <li v-for="(error, index) in listError" :key="index">
+                                {{ error.field }}: {{ error.msg }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -39,6 +52,8 @@ import { AuthRepository } from '~/src/repository';
 
 const email = ref(null);
 const password = ref(null);
+const error = ref(false);
+const listError = ref([]);
 
 onBeforeMount(() => {
     const token = localStorage.getItem('token');
@@ -48,13 +63,23 @@ onBeforeMount(() => {
 })
 const login = async () => {
     try {
+        listError.value = []
+        error.value = false
         const { data } = await AuthRepository.login({
             email: email.value, password: password.value
         })
         localStorage.setItem('token', data.token);
         navigateTo("/")
     } catch (exception) {
+        error.value = true;
         console.log(exception);
+        if (exception.status == 422) {
+            for (let key in exception?.data?.errors) {
+                listError.value.push(
+                    { field: key, msg: exception?.data?.errors[key].toString() }
+                );
+            }
+        }
     }
 }
 

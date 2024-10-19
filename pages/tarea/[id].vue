@@ -100,6 +100,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { format } from 'date-fns'
 import FileInput from '~/src/components/FileInput.vue';
 import DatePicker from '~/src/components/DatePicker.vue';
+import Swal from 'sweetalert2';
 
 import { TareasRepository } from '@/repository';
 
@@ -148,6 +149,16 @@ const cancel = () => {
 const update = async () => {
     listError.value = [];
     try {
+        const result = await Swal.fire({
+            title: '¿Editar la información de la tarea?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true, // Esto asegura que "Cancelar" esté a la izquierda y "Aceptar" a la derecha
+        });
+        if (result.isDismissed) return;
+
         load.value = true;
         const form = new FormData();
         if (tarea.value.titulo) {
