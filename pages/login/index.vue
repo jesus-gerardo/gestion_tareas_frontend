@@ -33,13 +33,19 @@
 
 <script lang="ts" setup>
 
-import { ref } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 
 import { AuthRepository } from '~/src/repository';
 
 const email = ref(null);
 const password = ref(null);
 
+onBeforeMount(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        navigateTo("/")
+    }
+})
 const login = async () => {
     try {
         const { data } = await AuthRepository.login({

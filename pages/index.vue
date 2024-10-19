@@ -81,7 +81,7 @@ import listComponent from '@/components/list.component.vue';
 import Header from '~/src/layout/header.vue';
 // repository
 import { TareasRepository } from '@/repository';
-import { TareaStore } from '@/store/TareasStore copy';
+import { TareaStore } from '~/src/store/TareasStore';
 
 // attribute
 const tareaList: any = ref([]);
@@ -155,7 +155,16 @@ const ordenamiento = async (payload) => {
 }
 
 const save = async () => {
-
+    try {
+        const { data } = await TareasRepository.cambio(store.tarea_id, { estado: store.estado });
+        if (!data.success) {
+            return;
+        }
+        isOpen.value = false;
+        await init();
+    } catch (exception) {
+        console.error(exception);
+    }
 }
 
 </script>
