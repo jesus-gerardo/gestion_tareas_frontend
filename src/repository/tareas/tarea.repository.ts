@@ -16,7 +16,7 @@ export default class TareasRepository extends HttpClient {
     }
 
     static async update(id, payload) {
-        return await this.put({ path: `${this.url}/${id}`, payload });
+        return await this.post({ path: `${this.url}/edit/${id}`, payload });
     }
 
     static async remove(id: number) {

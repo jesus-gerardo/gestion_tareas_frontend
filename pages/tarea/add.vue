@@ -5,9 +5,13 @@
 
             <!-- Formulario -->
             <form v-on:submit.prevent="">
+
+                <!-- imagene -->
+                <FileInput @file="files" />
+
                 <!-- Campo de Título -->
                 <div class="mb-4">
-                    <label for="titulo" class="block text-sm font-medium text-gray-700">Título</label>
+                    <label for="titulo" class="block text-sm font-medium text-gray-700">Título *</label>
                     <input type="text" v-model="tarea.titulo"
                         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Ingresa el título" />
@@ -29,7 +33,7 @@
 
                 <!-- Campo de Fecha de Creación -->
                 <div class="mb-4">
-                    <label for="fechaCreacion" class="block text-sm font-medium text-gray-700">Fecha de inicio</label>
+                    <label for="fechaCreacion" class="block text-sm font-medium text-gray-700">Fecha de inicio *</label>
                     <UPopover>
                         <input type="text" :value="format(fecha_creacion, 'dd-MM-yyyy')"
                             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -52,7 +56,8 @@
                             placeholder="Fecha de inicio" />
 
                         <template #panel="{ close }">
-                            <DatePicker v-model="fecha_finalizacion" is-required @close="close" />
+                            <DatePicker v-model="fecha_finalizacion" is-required @close="close"
+                                :min-date="fecha_creacion" />
                         </template>
                     </UPopover>
                 </div>
@@ -97,32 +102,55 @@ import { format } from 'date-fns'
 import DatePicker from '~/src/components/DatePicker.vue';
 // repository
 import { TareasRepository } from '@/repository';
+import FileInput from '~/src/components/FileInput.vue';
 
 const router = useRouter();
 
 const load = ref(false);
 const fecha_creacion = ref(new Date())
 const fecha_finalizacion = ref(new Date())
+const image = ref(null);
+const listError = ref([]);
 const tarea = ref({
     titulo: null,
     descripcion: null,
-    estado: 'pendiente',
-    fecha_creacion: null,
-    fecha_finalizacion: null,
+    estado: 'pendiente'
 })
-const listError = ref([]);
+
+watch(fecha_creacion, () => {
+    if (fecha_creacion.value > fecha_finalizacion.value) {
+        fecha_finalizacion.value = fecha_creacion.value;
+    }
+})
 
 const cancel = () => {
     router.push({ path: '/' })
 }
 
+const files = (file) => {
+    image.value = file
+}
+
 const save = async () => {
     listError.value = []
     try {
-        tarea.value.fecha_creacion = format(fecha_creacion.value, 'yyyy-MM-dd');
-        tarea.value.fecha_finalizacion = format(fecha_finalizacion.value, 'yyyy-MM-dd');
         load.value = true;
-        const { data } = await TareasRepository.create(tarea.value);
+        const form = new FormData();
+
+        if (tarea.value.titulo) {
+            form.append('titulo', tarea.value.titulo);
+        }
+        if (tarea.value.descripcion) {
+            form.append('descripcion', tarea.value.descripcion);
+        }
+        form.append('estado', tarea.value.estado);
+        form.append('fecha_creacion', format(fecha_creacion.value, 'yyyy-MM-dd'));
+        form.append('fecha_finalizacion', format(fecha_finalizacion.value, 'yyyy-MM-dd'));
+        if (image.value) {
+            form.append('picture', image.value);
+        }
+
+        const { data } = await TareasRepository.create(form);
         if (!data.success) {
             listError.value.push(
                 { field: '', msg: data.msg }
@@ -131,11 +159,12 @@ const save = async () => {
         }
         router.push({ path: '/' })
     } catch (exception) {
-        console.error(exception?.data?.errors);
-        for (let key in exception?.data?.errors) {
-            listError.value.push(
-                { field: key, msg: exception?.data?.errors[key].toString() }
-            );
+        if (exception.status == 422) {
+            for (let key in exception?.data?.errors) {
+                listError.value.push(
+                    { field: key, msg: exception?.data?.errors[key].toString() }
+                );
+            }
         }
     } finally {
         load.value = false

@@ -3,8 +3,12 @@
         <template #header>
             <div class="flex justify-between items-center">
                 <div class="flex-1">
+                    <div class="flex items-center">
+                        <!-- Mostrar la imagen solo si 'props.imagen' está definida -->
+                        <img v-if="props.imagen" :src="props.imagen" alt="Imagen"
+                            class="w-10 h-10 object-cover rounded-full mr-2" />
 
-                    <div class="flex">
+                        <!-- Título y estado -->
                         <h3 class="text-xl font-medium text-gray-800">{{ props.title }}</h3>
                         <UBadge color="white" size="xs" class="ml-2"><span>{{ props.estado }}</span></UBadge>
                     </div>
@@ -37,6 +41,7 @@ const props = defineProps<{
     estado?: string;
     fechaCreacion?: string;
     fechaFinalizacion?: string;
+    imagen?: string; // Aquí añadimos la propiedad 'imagen'
 }>();
 
 const open = ref(false)

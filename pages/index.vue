@@ -17,18 +17,21 @@
             <Placeholder class="h-32" />
 
             <template v-if="tareaList.length > 0">
+                <UAlert color="blue" variant="soft" icon="i-heroicons-exclamation-circle"
+                    description="Arrastre y suelte las tarjetas en el orden deseado" class="text-center" />
+
                 <draggable v-model="tareaList" item-key="id" class="list-group" ghost-class="ghost" @end="onDragEnd">
                     <template #item="{ element }">
                         <listComponent :id-tarea="element.id" :title="`#${element.order} ${element.titulo}`"
                             :descripcion="element.descripcion" :fecha-creacion="element.fecha_creacion"
-                            :fecha-finalizacion="element.fecha_finalizacion" :estado="element.estado" @delete="destroy"
-                            @update="update" @status="change" />
+                            :imagen="element.picture_url" :fecha-finalizacion="element.fecha_finalizacion"
+                            :estado="element.estado" @delete="destroy" @update="update" @status="change" />
                     </template>
                 </draggable>
             </template>
 
             <template v-else>
-                <UAlert icon="i-heroicons-outline-warning" color="red" variant="soft"
+                <UAlert icon="i-heroicons-exclamation-triangle" color="red" variant="soft"
                     description="No se encontraron tareas registradas" class="text-center" />
             </template>
         </UCard>
@@ -75,19 +78,20 @@
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import draggable from 'vuedraggable'
+import { TareaStore } from '~/src/store/TareasStore';
 
-// modules
+// components
 import listComponent from '@/components/list.component.vue';
 import Header from '~/src/layout/header.vue';
+
 // repository
 import { TareasRepository } from '@/repository';
-import { TareaStore } from '~/src/store/TareasStore';
+
 
 // attribute
 const tareaList: any = ref([]);
 const router = useRouter();
 const isOpen = ref(false)
-
 const store = TareaStore()
 
 onMounted(() => {
