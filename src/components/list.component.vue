@@ -3,12 +3,12 @@
         <template #header>
             <div class="flex justify-between items-center">
                 <div class="flex-1">
-                    <!-- Título de la tarea -->
+
                     <div class="flex">
                         <h3 class="text-xl font-medium text-gray-800">{{ props.title }}</h3>
                         <UBadge color="white" size="xs" class="ml-2"><span>{{ props.estado }}</span></UBadge>
                     </div>
-                    <!-- Fecha de creación y finalización debajo del título -->
+
                     <p class="text-sm text-gray-500">
                         <span class="font-semibold">{{ props.fechaCreacion }}</span>
                         -
@@ -16,12 +16,12 @@
                     </p>
                 </div>
 
-                <!-- Botones de acción (Editar y Eliminar) -->
                 <UDropdown v-model:open="open" :items="items" :popper="{ placement: 'bottom-start' }">
-                    <UButton color="white" label="Options" />
+                    <UButton color="white" label="Acciones" />
                 </UDropdown>
             </div>
         </template>
+
         <p class="text-gray-600">{{ props.descripcion ?? 'Sin descripción' }}</p>
     </UCard>
 </template>
@@ -29,7 +29,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-const emit = defineEmits(['delete', 'update']);
+const emit = defineEmits(['delete', 'update', 'status']);
 const props = defineProps<{
     idTarea?: number;
     title?: string;
@@ -52,7 +52,7 @@ const items = [
         },
         {
             label: 'cambiar estado',
-            click: () => { console.log('estado') }
+            click: () => { emit('status', { id_tarea: props.idTarea, estado: props.estado }) }
         }
     ]
 ]

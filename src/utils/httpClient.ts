@@ -9,11 +9,9 @@ export class HttpClient {
             "Content-Type": contentType ? contentType : "application/json",
             "Accept": "application/json"
         }
-
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
-        console.log(headers);
         return headers;
     }
 

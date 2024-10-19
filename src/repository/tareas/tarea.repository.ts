@@ -22,4 +22,8 @@ export default class TareasRepository extends HttpClient {
     static async remove(id: number) {
         return await this.delete({ path: `${this.url}/${id}`});
     }
+
+    static async ordenar(payload) {
+        return await this.post({ path: `${this.url}/ordenar`, payload });
+    }
 }
