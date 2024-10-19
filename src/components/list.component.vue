@@ -1,41 +1,35 @@
 <template>
-    <div class="bg-gray-50 p-4 rounded-lg shadow-md flex justify-between items-center">
-        <div class="flex-1">
-            <!-- Título de la tarea -->
-            <h3 class="text-xl font-medium text-gray-800">{{ props.title }}</h3>
+    <UCard class="rounded-lg shadow-md mt-5">
+        <template #header>
+            <div class="flex justify-between items-center">
+                <div class="flex-1">
+                    <!-- Título de la tarea -->
+                    <div class="flex">
+                        <h3 class="text-xl font-medium text-gray-800">{{ props.title }}</h3>
+                        <UBadge color="white" size="xs" class="ml-2"><span>{{ props.estado }}</span></UBadge>
+                    </div>
+                    <!-- Fecha de creación y finalización debajo del título -->
+                    <p class="text-sm text-gray-500">
+                        <span class="font-semibold">{{ props.fechaCreacion }}</span>
+                        -
+                        <span class="font-semibold">{{ props.fechaFinalizacion }}</span>
+                    </p>
+                </div>
 
-            <!-- Fecha de creación y finalización debajo del título -->
-            <p class="text-sm text-gray-500">
-                <span class="font-semibold">{{ props.fechaCreacion }}</span>
-                -
-                <span class="font-semibold">{{ props.fechaFinalizacion }}</span>
-            </p>
-
-            <!-- Descripción de la tarea -->
-            <p class="text-gray-600 mt-2">{{ props.descripcion }}</p>
-        </div>
-
-        <!-- Botones de acción (Editar y Eliminar) -->
-        <div class="flex flex-row items-center space-y-2">
-            <button @click="emit('update', props.idTarea)"
-                class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 w-full sm:w-auto text-xs font-medium">
-                Editar
-            </button>
-
-            <button @click="emit('delete', props.idTarea)"
-                class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300 w-full sm:w-auto text-xs font-medium">
-                Eliminar
-            </button>
-        </div>
-    </div>
+                <!-- Botones de acción (Editar y Eliminar) -->
+                <UDropdown v-model:open="open" :items="items" :popper="{ placement: 'bottom-start' }">
+                    <UButton color="white" label="Options" />
+                </UDropdown>
+            </div>
+        </template>
+        <p class="text-gray-600">{{ props.descripcion ?? 'Sin descripción' }}</p>
+    </UCard>
 </template>
 
 <script lang="ts" setup>
-
 import { ref } from 'vue';
 
 const emit = defineEmits(['delete', 'update']);
-
 const props = defineProps<{
     idTarea?: number;
     title?: string;
@@ -44,5 +38,23 @@ const props = defineProps<{
     fechaCreacion?: string;
     fechaFinalizacion?: string;
 }>();
+
+const open = ref(false)
+const items = [
+    [
+        {
+            label: 'Editar',
+            click: () => { emit('update', props.idTarea) }
+        },
+        {
+            label: 'Eliminar',
+            click: () => { emit('delete', props.idTarea) }
+        },
+        {
+            label: 'cambiar estado',
+            click: () => { console.log('estado') }
+        }
+    ]
+]
 
 </script>

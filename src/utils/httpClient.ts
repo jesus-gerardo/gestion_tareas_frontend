@@ -4,10 +4,16 @@ import { instanceAxios as $http } from "@/plugins/axios";
 export class HttpClient {
 
     static getHeader(contentType: string | any = null) {
-        const headers = {
+        const token = localStorage.getItem('token');
+        let headers = {
             "Content-Type": contentType ? contentType : "application/json",
             "Accept": "application/json"
         }
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        console.log(headers);
         return headers;
     }
 
@@ -34,12 +40,11 @@ export class HttpClient {
     static async get({
         path,
         params,
-        headers,
-        credencial = true
+        headers
     }) {
         try {
             const headersx = headers ? headers : this.getHeader();
-            return await $http.get(path, { params: params, headers: headersx, withCredentials: credencial });
+            return await $http.get(path, { params: params, headers: headersx });
         } catch (error) {
             return await this.handlerError(error);
         }
@@ -48,8 +53,7 @@ export class HttpClient {
     static async post({
         path,
         payload,
-        headers,
-        credencial = true
+        headers
     }) {
         try {
             let contentHeaders = headers ? headers : this.getHeader();
@@ -57,7 +61,7 @@ export class HttpClient {
                 contentHeaders = this.getHeader("multipart/form-data");
             }
 
-            return await $http.post(path, payload, { headers: contentHeaders, withCredentials: credencial });
+            return await $http.post(path, payload, { headers: contentHeaders });
         } catch (error) {
             return await this.handlerError(error);
         }
@@ -66,8 +70,7 @@ export class HttpClient {
     static async put({
         path,
         payload,
-        headers,
-        credencial = true
+        headers
     }) {
         try {
 
@@ -75,7 +78,7 @@ export class HttpClient {
             if (payload instanceof FormData) {
                 contentHeaders = this.getHeader("multipart/form-data");
             }
-            return await $http.put(path, payload, { headers: contentHeaders, withCredentials: credencial });
+            return await $http.put(path, payload, { headers: contentHeaders });
         } catch (error) {
             console.error(error);
             return await this.handlerError(error);
@@ -86,11 +89,10 @@ export class HttpClient {
         path,
         payload,
         headers,
-        credencial = true
     }) {
         try {
             const headersx = headers ? headers : this.getHeader();
-            return await $http.patch(path, payload, { headers: headersx, withCredentials: credencial });
+            return await $http.patch(path, payload, { headers: headersx });
         } catch (error) {
             console.error(error);
             return await this.handlerError(error);
@@ -100,11 +102,10 @@ export class HttpClient {
     static async delete({
         path,
         headers,
-        credencial = true
     }) {
         try {
             const headersx = headers ? headers : this.getHeader();
-            return await $http.delete(path, { headers: headersx, withCredentials: credencial });
+            return await $http.delete(path, { headers: headersx });
         } catch (error) {
             console.error(error);
             return await this.handlerError(error);

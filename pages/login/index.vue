@@ -8,34 +8,48 @@
             <form action="#" method="post">
                 <!-- Campo de Usuario -->
                 <div class="mb-4">
-                    <label for="username" class="block text-gray-600 mb-2">Usuario</label>
-                    <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required
+                    <label for="username" class="block text-gray-600 mb-2">Correo</label>
+                    <input type="text" v-model="email" placeholder="Ingresa tu correo" required
                         class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Campo de Contraseña -->
                 <div class="mb-6">
                     <label for="password" class="block text-gray-600 mb-2">Contraseña</label>
-                    <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required
+                    <input type="password" v-model="password" placeholder="Ingresa tu contraseña" required
                         class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Botón de Ingreso -->
-                <button type="submit"
+                <button type="button" @click="login"
                     class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-300">
                     Ingresar
                 </button>
             </form>
-
-            <!-- Enlace de Contraseña Olvidada -->
-            <div class="mt-4 text-center">
-                <a href="#" class="text-blue-500 hover:underline">¿Olvidaste tu contraseña?</a>
-            </div>
         </div>
 
     </div>
 </template>
 
 <script lang="ts" setup>
+
+import { ref } from 'vue';
+
+import { AuthRepository } from '~/src/repository';
+
+const email = ref(null);
+const password = ref(null);
+
+const login = async () => {
+    try {
+        const { data } = await AuthRepository.login({
+            email: email.value, password: password.value
+        })
+        localStorage.setItem('token', data.token);
+        navigateTo("/")
+    } catch (exception) {
+        console.log(exception);
+    }
+}
 
 </script>

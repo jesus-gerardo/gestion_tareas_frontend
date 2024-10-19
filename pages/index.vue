@@ -1,26 +1,31 @@
 <template>
     <div class="bg-gray-100 p-6">
+        <UCard class="p-6 rounded-lg max-w-6xl mx-auto">
+            <template #header>
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-semibold text-gray-800">Lista de Tareas</h2>
+                    <button
+                        class="bg-green-500 text-white py-2 px-3 rounded-lg hover:bg-green-600 transition duration-300 text-xs"
+                        @click="create">
+                        Agregar
+                    </button>
+                </div>
+            </template>
 
-        <!-- Card Principal -->
-        <div class="bg-white p-6 rounded-lg shadow-md max-w-6xl mx-auto">
-            <!-- Título y Botón -->
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-semibold text-gray-800">Lista de Tareas</h2>
-                <button
-                    class="bg-green-500 text-white py-2 px-3 rounded-lg hover:bg-green-600 transition duration-300 text-xs"
-                    @click="create">
-                    Agregar
-                </button>
-            </div>
+            <Placeholder class="h-32" />
 
-            <!-- listado de tareas -->
-            <div class="space-y-4">
-                <listComponent v-for="tarea in tareaList" :id-tarea="tarea.id" :title="tarea.titulo"
+            <template v-if="tareaList.length > 0">
+                <listComponent v-for="tarea in tareaList" :key="tarea.id" :id-tarea="tarea.id" :title="tarea.titulo"
                     :descripcion="tarea.descripcion" :fecha-creacion="tarea.fecha_creacion"
                     :fecha-finalizacion="tarea.fecha_finalizacion" :estado="tarea.estado" @delete="destroy"
                     @update="update" />
-            </div>
-        </div>
+            </template>
+
+            <template v-else>
+                <UAlert icon="i-heroicons-outline-warning" color="red" variant="soft"
+                    description="No se encontraron tareas registradas" class="text-center" />
+            </template>
+        </UCard>
     </div>
 </template>
 
@@ -52,12 +57,11 @@ const init = async () => {
 
 const create = () => {
     console.log('creacion')
-    router.push({path:'tarea/add'})
-
+    router.push({ path: 'tarea/add' })
 }
 
 const update = (id: number) => {
-    router.push({path: `tarea/${id}`});
+    router.push({ path: `tarea/${id}` });
 }
 
 const destroy = async (id: number) => {

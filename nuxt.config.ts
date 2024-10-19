@@ -3,7 +3,11 @@ export default defineNuxtConfig({
   ssr: false,
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['@nuxt/ui', '@nuxtjs/tailwindcss'],
+  tailwindcss: {
+    cssPath: '~/assets/css/tailwind.css', // Ruta a tu archivo CSS
+    configPath: 'tailwind.config.js', // Ruta a tu archivo de configuración de Tailwind
+  },
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.VITE_API_BASE_URL

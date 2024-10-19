@@ -23,33 +23,52 @@
 
                 <!-- Campo de Fecha de Creación -->
                 <div class="mb-4">
-                    <label for="fechaCreacion" class="block text-sm font-medium text-gray-700">Fecha de Creación</label>
-                    <input type="date" v-model="tarea.fecha_creacion"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    <label for="fechaCreacion" class="block text-sm font-medium text-gray-700">Estado</label>
+                    <USelect v-model="tarea.estado" :options="['pendiente', 'progreso', 'completado']" size="lg" />
+                </div>
+
+                <!-- Campo de Fecha de Creación -->
+                <div class="mb-4">
+                    <label for="fechaCreacion" class="block text-sm font-medium text-gray-700">Fecha de inicio</label>
+                    <UPopover>
+                        <input type="text" :value="format(fecha_creacion, 'dd-MM-yyyy')"
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Fecha de inicio" />
+
+                        <template #panel="{ close }">
+                            <DatePicker v-model="fecha_creacion" is-required @close="close"
+                                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                        </template>
+                    </UPopover>
                 </div>
 
                 <!-- Campo de Fecha de Vencimiento -->
                 <div class="mb-6">
                     <label for="fechaVencimiento" class="block text-sm font-medium text-gray-700">Fecha de
                         Vencimiento</label>
-                    <input type="date" v-model="tarea.fecha_finalizacion"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    <UPopover :popper="{ placement: 'bottom-start' }">
+                        <input type="text" :value="format(fecha_finalizacion, 'dd-MM-yyyy')"
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Fecha de inicio" />
+
+                        <template #panel="{ close }">
+                            <DatePicker v-model="fecha_finalizacion" is-required @close="close" />
+                        </template>
+                    </UPopover>
                 </div>
 
                 <!-- Botón de Enviar -->
-                <div class="flex justify-center">
-                    <button type="button" @click="save" :disabled="load"
-                        :class="[load ? 'opacity-50 cursor-not-allowed' : '']"
-                        class="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300">
-                        Guardar
-                    </button>
-                </div>
-
-                <div class="flex justify-center py-2">
+                <div class="flex justify-end">
                     <button type="button" @click="cancel" :disabled="load"
                         :class="[load ? 'opacity-50 cursor-not-allowed' : '']"
-                        class="w-full px-4 py-2 bg-gray-500 text-white font-semibold rounded-md hover:bg-gray-600 transition duration-300">
+                        class="mr-2 px-4 py-2 bg-gray-500 text-white font-semibold rounded-md hover:bg-gray-600 transition duration-300">
                         cancelar
+                    </button>
+
+                    <button type="button" @click="save" :disabled="load"
+                        :class="[load ? 'opacity-50 cursor-not-allowed' : '']"
+                        class=" px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300">
+                        Guardar
                     </button>
                 </div>
 
@@ -73,18 +92,23 @@
 <script lang="ts" setup>
 
 import { useRouter } from 'vue-router';
+import { format } from 'date-fns'
 
+import DatePicker from '~/src/components/DatePicker.vue';
 // repository
 import { TareasRepository } from '@/repository';
 
 const router = useRouter();
 
 const load = ref(false);
+const fecha_creacion = ref(new Date())
+const fecha_finalizacion = ref(new Date())
 const tarea = ref({
     titulo: null,
     descripcion: null,
-    fecha_creacion: new Date(),
-    fecha_finalizacion: new Date(),
+    estado: 'pendiente',
+    fecha_creacion: null,
+    fecha_finalizacion: null,
 })
 const listError = ref([]);
 
@@ -95,6 +119,8 @@ const cancel = () => {
 const save = async () => {
     listError.value = []
     try {
+        tarea.value.fecha_creacion = format(fecha_creacion.value, 'yyyy-MM-dd');
+        tarea.value.fecha_finalizacion = format(fecha_finalizacion.value, 'yyyy-MM-dd');
         load.value = true;
         const { data } = await TareasRepository.create(tarea.value);
         if (!data.success) {
