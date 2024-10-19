@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   ssr: false,
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@nuxtjs/tailwindcss'],
+  modules: ['@nuxt/ui', '@nuxtjs/tailwindcss', '@pinia/nuxt'],
   tailwindcss: {
     cssPath: '~/assets/css/tailwind.css', // Ruta a tu archivo CSS
     configPath: 'tailwind.config.js', // Ruta a tu archivo de configuración de Tailwind

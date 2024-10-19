@@ -1,4 +1,6 @@
 <template>
+    <Header />
+
     <div class="bg-gray-100 p-6">
         <UCard class="p-6 rounded-lg max-w-6xl mx-auto">
             <template #header>
@@ -36,7 +38,7 @@ import { useRouter } from 'vue-router';
 
 // modules
 import listComponent from '@/components/list.component.vue';
-
+import Header from '~/src/layout/header.vue';
 // repository
 import { TareasRepository } from '@/repository';
 
